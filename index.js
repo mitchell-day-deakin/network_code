@@ -13,7 +13,7 @@ const parser = port.pipe(new Readline({ delimiter: '\n' }));
 
 //prints to console when the mqtt client connects to broker. Also subscribes to TFS channel if uncommented
 client.on('connect', ()=>{
-    console.log("Publisher connected");
+    //console.log("Publisher connected");
     /*COMMENT THE NEXT LINE OUT IF YOU WANT TO BE A PUBLISHER/MASTER*/
     client.subscribe("TFS/#");
 })
@@ -24,9 +24,11 @@ function publishMqtt(message){
 }
 
 client.on("message", (topic, message)=>{
-    console.log("From Subscription");
-    console.log(topic, message.toString())
-    port.write(message);
+    //console.log("From Subscription");
+    //console.log(topic, message.toString())
+    port.write(message,(err)=>{
+        console.log(err) 
+    });
 })
 
 
@@ -39,10 +41,23 @@ function openPort(){
 
 // Switches the port into "flowing mode"
 parser.on('data', function (data) {
-
+    console.log(data)
     /*COMMENT THE NEXT LINE OUT IF YOU ARE A SLAVE*/
     publishMqtt("forward");
 });
 
 // Switches the port into "flowing mode"
 port.on('open', openPort);
+
+
+
+function testSerial(){
+    setInterval(()=>{
+        publishMqtt("forward");
+        setTimeout(()=>{
+            publishMqtt("reverse");
+        }, 1000)
+    }, 2000);
+}
+
+testSerial();
