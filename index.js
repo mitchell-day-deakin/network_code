@@ -41,7 +41,7 @@ function openPort(){
 
 // Switches the port into "flowing mode"
 parser.on('data', function (data) {
-    /*COMMENT THE NEXT LINE OUT IF YOU ARE A SLAVE*/
+    /*COMMENT THE NEXT 2 LINES OUT IF YOU ARE A SLAVE*/
     console.log("Sending data:", data);
     publishMqtt(`${data}\n`);
 });
